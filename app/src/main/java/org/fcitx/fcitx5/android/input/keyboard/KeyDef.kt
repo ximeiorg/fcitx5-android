@@ -116,6 +116,8 @@ open class KeyDef(
         open class Preview(val content: String) : Popup()
 
         class AltPreview(content: String, val alternative: String) : Preview(content)
+        
+        class TriplePreview(content: String, val alternative: String, val upAlternative: String) : Preview(content)
 
         class Keyboard(val label: String) : Popup()
 

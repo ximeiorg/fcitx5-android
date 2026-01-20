@@ -324,6 +324,36 @@ abstract class BaseKeyboard(
                             oldOnGestureListener.onGesture(view, event)
                         }
                     }
+                    is KeyDef.Popup.TriplePreview -> {
+                        val oldOnGestureListener = onGestureListener ?: OnGestureListener.Empty
+                        onGestureListener = OnGestureListener { view, event ->
+                            view as KeyView
+                            if (popupOnKeyPress) {
+                                when (event.type) {
+                                    GestureType.Down -> onPopupAction(
+                                        PopupAction.PreviewAction(view.id, it.content, view.bounds)
+                                    )
+                                    GestureType.Move -> {
+                                        val swipeDown = swipeSymbolDirection.checkY(event.totalY)
+                                        val swipeUp = swipeSymbolDirection.checkYUp(event.totalY)
+                                        val text = when {
+                                            swipeDown -> it.alternative
+                                            swipeUp -> it.upAlternative
+                                            else -> it.content
+                                        }
+                                        onPopupAction(
+                                            PopupAction.PreviewUpdateAction(view.id, text)
+                                        )
+                                    }
+                                    GestureType.Up -> {
+                                        onPopupAction(PopupAction.DismissAction(view.id))
+                                    }
+                                }
+                            }
+                            // never consume gesture in preview popup
+                            oldOnGestureListener.onGesture(view, event)
+                        }
+                    }
                     is KeyDef.Popup.Preview -> {
                         val oldOnGestureListener = onGestureListener ?: OnGestureListener.Empty
                         onGestureListener = OnGestureListener { view, event ->

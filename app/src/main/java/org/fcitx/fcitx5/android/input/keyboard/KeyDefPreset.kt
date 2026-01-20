@@ -61,6 +61,29 @@ class AlphabetKey(
     )
 )
 
+class AlphabetKeyWithSwipeUp(
+    val character: String,
+    val punctuation: String,
+    val upContent: String,
+    variant: Variant = Variant.Normal,
+    popup: Array<Popup>? = null
+) : KeyDef(
+    Appearance.AltText(
+        displayText = character,
+        altText = punctuation,
+        textSize = 23f,
+        variant = variant
+    ),
+    setOf(
+        Behavior.Press(KeyAction.FcitxKeyAction(character)),
+        Behavior.Swipe(KeyAction.FcitxKeyAction(punctuation))
+    ),
+    popup ?: arrayOf(
+        Popup.TriplePreview(character, punctuation, upContent),
+        Popup.Keyboard(character)
+    )
+)
+
 class AlphabetDigitKey(
     val character: String,
     altText: String,
